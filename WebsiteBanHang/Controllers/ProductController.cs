@@ -63,6 +63,8 @@ namespace WebsiteBanHang.Controllers
             {
                 return NotFound();
             }
+            var categories = await _categoryRepository.GetAllAsync();
+            ViewBag.Categories = new SelectList(categories, "Id", "Name", product.CategoryId);
             return View(product);
         }
 
@@ -106,12 +108,17 @@ namespace WebsiteBanHang.Controllers
             {
                 return NotFound();
             }
+            var categories = await _categoryRepository.GetAllAsync();
             return View(product);
         }
 
         [HttpPost, ActionName("Delete")]
-        public async Task<IActionResult> DeleteConfirmed(int id)
+        public async Task<IActionResult> DeleteConfirmed(int id, Product product)
         {
+            if(id != product.Id)
+            {
+                return NotFound();
+            }
             await _productRepository.DeleteAsync(id);
             return RedirectToAction(nameof(Index));
         }
